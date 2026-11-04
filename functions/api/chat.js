@@ -55,11 +55,11 @@ export async function onRequestPost({ request, env }) {
       body.tools = [{ googleSearch: {} }];
     }
 
-    // 4. 現在利用可能な最新モデル候補（順番に試行します）
+    // 4. Google推奨の最新モデルを指定
     const candidateModels = [
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-2.5-flash-lite'
+      'gemini-3.5-flash-lite',
+      'gemini-3.5-flash',
+      'gemini-3.0-flash'
     ];
 
     let lastError = '';
@@ -97,7 +97,7 @@ export async function onRequestOptions() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-pass',
+      'Access-ベース-Allow-Headers': 'Content-Type, x-pass',
     }
   });
 }
