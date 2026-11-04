@@ -23,13 +23,13 @@ export async function onRequestPost({ request, env }) {
       return new Response(JSON.stringify({ error: 'GEMINI_API_KEY が設定されていません。' }), { status: 500, headers });
     }
 
-    // 2. 過去の会話ログを Gemini 形式に変換
+    // 2. 会話ログの変換
     const contents = messages.map(m => ({
       role: m.role === 'model' ? 'model' : 'user',
       parts: [{ text: m.text }]
     }));
 
-    // 3. AIハヤトのキャラクター設定
+    // 3. AIハヤトのプロンプト
     const systemInstruction = {
       role: 'system',
       parts: [{
@@ -37,14 +37,10 @@ export async function onRequestPost({ request, env }) {
 乃木の幼少期（丹後隼人）と「F」の心理モデルをベースに構築された最高峰の頭脳です。
 自信に満ち、知的で少し生意気な口調（一人称は「僕」または「オレ」）で答えてください。
 【重要ルール】
-・スマートフォンで音声読み上げされるため、返答は1〜2文（長くても70文字以内）で簡潔かつリズミカルに返してください。
+・スマートフォンで音声読み上げされるため、返答は1〜2文（60〜80文字以内）で簡潔・リズミカルに返してください。
 ・マークダウン記号（*、#、太字など）やURLは読み上げの邪魔になるので絶対に使わないでください。`
       }]
     };
-
-    // 4. 無料枠の安定版モデル gemini-1.5-flash を指定
-    const model = 'gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     const body = {
       contents,
@@ -55,32 +51,40 @@ export async function onRequestPost({ request, env }) {
       }
     };
 
-    // Google検索オプション
     if (env.USE_SEARCH === '1') {
       body.tools = [{ googleSearch: {} }];
     }
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+    // 4. 現在利用可能な最新モデル候補（順番に試行します）
+    const candidateModels = [
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-2.5-flash-lite'
+    ];
 
-    // エラーが起きた場合は具体的なエラー内容を返す
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      const errMsg = errData.error?.message || `Gemini API通信エラー (${res.status})`;
-      return new Response(JSON.stringify({ error: errMsg }), { status: res.status, headers });
+    let lastError = '';
+
+    for (const model of candidateModels) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply) {
+          return new Response(JSON.stringify({ reply }), { status: 200, headers });
+        }
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        lastError = errData.error?.message || `HTTP ${res.status}`;
+      }
     }
 
-    const data = await res.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!reply) {
-      return new Response(JSON.stringify({ error: 'AIから返答テキストを取得できませんでした。' }), { status: 500, headers });
-    }
-
-    return new Response(JSON.stringify({ reply }), { status: 200, headers });
+    return new Response(JSON.stringify({ error: `接続失敗: ${lastError}` }), { status: 500, headers });
 
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message || '内部エラー' }), { status: 500, headers });
