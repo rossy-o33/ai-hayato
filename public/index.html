@@ -11,56 +11,61 @@
 <title>AIハヤト</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#030a1c;--deep:#0a2a66;--blue:#1e6bff;--cyan:#00e5ff;--ice:#e8f4ff;--dim:#7fa6d9}
+:root{--bg:#030a1c;--blue:#1e6bff;--cyan:#00e5ff;--ice:#e8f4ff;--dim:#7fa6d9}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{background:radial-gradient(120% 70% at 50% 38%,#0b3a8f 0%,#06194a 45%,var(--bg) 100%);color:var(--ice);
-  font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;overflow:hidden;
-  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);display:flex;flex-direction:column}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;
-  background:linear-gradient(rgba(0,229,255,.06) 1px,transparent 1px) 0 0/100% 44px,
-             linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px) 0 0/44px 100%;
-  mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%)}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;position:relative;z-index:2}
+body{background:radial-gradient(120% 70% at 50% 38%,#0b3a8f 0%,#06194a 45%,var(--bg) 100%);color:var(--ice);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;overflow:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);display:flex;flex-direction:column}
+#bg{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;position:relative;z-index:2}
 h1{font:700 17px Orbitron,sans-serif;letter-spacing:.14em;color:var(--cyan)}
-#state{font-size:13px;color:var(--ice);border:1px solid rgba(0,229,255,.5);border-radius:99px;padding:4px 12px;background:rgba(0,229,255,.08)}
+#state{font-size:13px;border:1px solid rgba(0,229,255,.5);border-radius:99px;padding:4px 12px;background:rgba(0,229,255,.08)}
 #stage{flex:1;min-height:0;position:relative;display:grid;place-items:center}
-.ring{position:absolute;border-radius:50%;width:min(86vw,400px);aspect-ratio:1;top:50%;left:50%;translate:-50% -52%;
-  border:1px solid rgba(0,229,255,.4);box-shadow:0 0 60px rgba(30,107,255,.45) inset,0 0 40px rgba(0,229,255,.15)}
-.ring.r2{width:min(100vw,470px);border:1px dashed rgba(127,166,217,.45);box-shadow:none;animation:spin 40s linear infinite}
+.ring{position:absolute;border-radius:50%;width:min(86vw,400px);aspect-ratio:1;top:50%;left:50%;translate:-50% -52%;border:1px solid rgba(0,229,255,.3);box-shadow:0 0 60px rgba(30,107,255,.4) inset}
+.ring.r2{width:min(100vw,470px);border:1px dashed rgba(127,166,217,.4);box-shadow:none;animation:spin 40s linear infinite}
 .ring.r3{width:min(72vw,330px);border:2px solid transparent;border-top-color:var(--cyan);border-bottom-color:var(--blue);box-shadow:none;animation:spin 9s linear infinite}
-body[data-s=think] .ring.r3{animation-duration:1.4s}
-body[data-s=listen] .ring:not(.r2){animation:pulse 1.1s ease-in-out infinite}
+body[data-s=think] .ring.r3{animation-duration:1.2s}
 @keyframes spin{to{rotate:360deg}}
-@keyframes pulse{50%{scale:1.06;border-color:var(--cyan)}}
 #char{position:relative;height:min(100%,560px);aspect-ratio:950/1500;animation:bob 4s ease-in-out infinite;transform-origin:50% 95%;filter:drop-shadow(0 0 24px rgba(0,229,255,.35))}
 body[data-s=speak] #char{animation:talk .9s ease-in-out infinite}
 body[data-s=listen] #char{animation:lean 2.4s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-8px)}}
-@keyframes talk{0%,100%{transform:translateY(0) rotate(-1deg)}25%{transform:translateY(-6px) rotate(0deg) scale(1.01)}50%{transform:translateY(0) rotate(1.2deg)}75%{transform:translateY(-4px) rotate(0deg) scale(1.01)}}
+@keyframes talk{0%,100%{transform:translateY(0) rotate(-1deg)}25%{transform:translateY(-6px) scale(1.01)}50%{transform:translateY(0) rotate(1.2deg)}75%{transform:translateY(-4px) scale(1.01)}}
 @keyframes lean{50%{transform:translateY(-3px) rotate(-2.5deg)}}
 #char img,#char svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-#cap{position:relative;z-index:2;margin:0 18px;padding:8px 0 8px 12px;border-left:2px solid var(--cyan);font-size:15px;line-height:1.7;max-height:7.2em;overflow:auto;min-height:3.4em;color:var(--ice)}
+#char::before{content:"";position:absolute;inset:-35%;z-index:-1;opacity:0;transition:.3s;background:repeating-conic-gradient(from 0deg at 50% 45%,rgba(0,229,255,.25) 0 2deg,transparent 2deg 9deg);-webkit-mask-image:radial-gradient(circle,transparent 28%,#000 72%);mask-image:radial-gradient(circle,transparent 28%,#000 72%)}
+body[data-e=surprise] #char::before,body[data-e=serious] #char::before{opacity:1}
+#fx i{position:absolute;opacity:0;transition:.25s;font-style:normal}
+.ex{left:76%;top:6%;font:700 60px Orbitron;color:#ffd84d;text-shadow:0 0 12px #ff9}
+.qm{left:76%;top:6%;font:700 54px Orbitron;color:var(--cyan)}
+.sw{left:70%;top:24%;width:22px;height:34px;background:#7fd8ff;border:2px solid #fff;border-radius:50% 50% 50% 50%/60% 60% 40% 40%}
+.sp{left:10%;top:18%;font-size:46px;color:#fff;text-shadow:0 0 14px var(--cyan)}
+body[data-e=surprise] .ex,body[data-e=think] .qm,body[data-e=sweat] .sw,body[data-e=happy] .sp,body[data-e=smug] .sp{opacity:1}
+#cap{position:relative;z-index:2;margin:0 18px;padding:8px 0 8px 12px;border-left:2px solid var(--cyan);font-size:15px;line-height:1.7;max-height:6.6em;overflow:auto;min-height:3.4em}
 #cap small{display:block;color:var(--dim);font-size:12px}
-footer{position:relative;z-index:2;padding:10px 18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
-#mic{width:78px;height:78px;border-radius:50%;border:2px solid var(--cyan);background:radial-gradient(circle at 50% 35%,#2a7bff,#0a2a66);
-  color:#fff;display:grid;place-items:center;box-shadow:0 0 24px rgba(0,229,255,.5);cursor:pointer}
-#mic svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#tools{position:relative;z-index:2;display:flex;gap:6px;padding:4px 18px;overflow-x:auto}
+.chip,.sub{background:rgba(3,10,28,.5);border:1px solid rgba(127,166,217,.5);color:var(--ice);border-radius:99px;padding:6px 12px;font-size:12px;white-space:nowrap}
+.sub{border-radius:10px;padding:9px 10px;font-size:13px}
+[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.12)}
+footer{position:relative;z-index:2;padding:6px 18px 12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+#mic{width:74px;height:74px;border-radius:50%;border:2px solid var(--cyan);background:radial-gradient(circle at 50% 35%,#2a7bff,#0a2a66);color:#fff;display:grid;place-items:center;box-shadow:0 0 24px rgba(0,229,255,.5)}
+#mic svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 body[data-s=listen] #mic{background:radial-gradient(circle at 50% 35%,#00e5ff,#1e6bff);box-shadow:0 0 40px var(--cyan)}
-.sub{background:none;border:1px solid rgba(127,166,217,.5);color:var(--ice);border-radius:10px;padding:9px 10px;font-size:13px}
-.sub[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.1)}
-#txt{display:none;position:relative;z-index:2;margin:0 18px 12px;gap:8px}
+#txt{display:none;position:relative;z-index:2;margin:0 18px 8px;gap:8px}
 #txt.on{display:flex}
-#txt input{flex:1;min-width:0;background:rgba(3,10,28,.7);border:1px solid rgba(0,229,255,.5);border-radius:10px;color:var(--ice);padding:11px 12px;font-size:16px}
+#txt input,.ov input{flex:1;min-width:0;background:rgba(3,10,28,.7);border:1px solid rgba(0,229,255,.5);border-radius:10px;color:var(--ice);padding:11px 12px;font-size:16px}
 #txt button{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:0 16px;font-size:15px}
-:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-#start{position:fixed;inset:0;z-index:9;background:rgba(3,10,28,.94);display:grid;place-content:center;gap:18px;text-align:center;padding:24px}
-#start button{font:700 18px Orbitron,"Hiragino Sans",sans-serif;letter-spacing:.2em;color:#fff;background:linear-gradient(#2a7bff,#0a3aa8);border:2px solid var(--cyan);border-radius:14px;padding:16px 40px;box-shadow:0 0 30px rgba(0,229,255,.5)}
-#start p{color:var(--dim);font-size:14px;line-height:1.8}
+.ov{position:fixed;inset:0;z-index:9;background:rgba(3,10,28,.95);display:grid;place-content:center;gap:16px;text-align:center;padding:24px;transition:opacity .6s}
+.ov[hidden]{display:none}
+.ov button{font:700 16px Orbitron,"Hiragino Sans",sans-serif;letter-spacing:.2em;color:#fff;background:linear-gradient(#2a7bff,#0a3aa8);border:2px solid var(--cyan);border-radius:14px;padding:14px 36px;box-shadow:0 0 30px rgba(0,229,255,.5)}
+.ov p,#bl{color:var(--dim);font-size:14px;line-height:1.8}
+#bl{font:13px/1.9 ui-monospace,Menlo,monospace;color:var(--cyan);text-align:left;white-space:pre}
+.scan{height:3px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:sc 1.6s ease-in-out infinite}
+@keyframes sc{0%,100%{transform:translateX(-60%)}50%{transform:translateX(60%)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
-<body data-s="idle">
+<body data-s="idle" data-e="">
+<canvas id="bg"></canvas>
 <header><h1>AI HAYATO</h1><span id="state">待機中</span></header>
 <main id="stage">
   <div class="ring r2"></div><div class="ring"></div><div class="ring r3"></div>
@@ -81,86 +86,165 @@ body[data-s=listen] #mic{background:radial-gradient(circle at 50% 35%,#00e5ff,#1
         <polygon points="554,643 702,620 702,702 554,702"/>
       </g>
     </svg>
+    <div id="fx"><i class="ex">!</i><i class="qm">?</i><i class="sw"></i><i class="sp">✦</i></div>
   </div>
 </main>
 <div id="cap"><small>ハヤト</small>起動したら、マイクを押して話しかけてください。</div>
+<div id="tools">
+  <button class="chip" data-m="chat" aria-pressed="true">通常</button>
+  <button class="chip" data-m="news" aria-pressed="false">ニュース報告</button>
+  <button class="chip" data-m="cipher" aria-pressed="false">暗号ゲーム</button>
+  <button class="chip" id="cam">写真で質問</button>
+  <button class="chip" id="cd">名言カード</button>
+  <button class="chip" id="hq" aria-pressed="true">高音質</button>
+</div>
 <div id="txt"><input id="in" placeholder="文字で質問する" enterkeyhint="send" autocomplete="off"><button id="send">送信</button></div>
 <footer>
   <button class="sub" id="loop" aria-pressed="false">連続会話</button>
   <button id="mic" aria-label="話しかける"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
   <button class="sub" id="kb" aria-pressed="false">文字入力</button>
 </footer>
-<div id="start"><p>AIハヤトを起動します。<br>音声とマイクを使うので、最初に一度タップしてください。</p><button id="go">起動</button></div>
+<input type="file" id="fi" accept="image/*" capture="environment" hidden>
+<div class="ov" id="auth" hidden><p>別班 認証<br>合言葉を入力してください</p><div class="scan"></div><div style="display:flex;gap:8px"><input id="pw" type="password" autocomplete="off"><button id="pwok" style="padding:0 18px;font-size:14px">認証</button></div></div>
+<div class="ov" id="start"><p>AIハヤトを起動します。<br>音声とマイクを使うので、最初に一度タップしてください。</p><button id="go">起動</button></div>
 
 <script>
-const $=s=>document.querySelector(s);
-const st=$('#state'),cap=$('#cap'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let history=[],busy=false,speaking=false,loop=false,rec=null,mt=null;
-const setS=(s,l)=>{document.body.dataset.s=s;st.textContent=l};
+const $=s=>document.querySelector(s),B=document.body,st=$('#state'),cap=$('#cap'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},SS=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+let history=[],busy=false,speaking=false,loop=false,rec=null,mt=null,ac,an,cur=null,gen=0,chain=Promise.resolve(),hq=true,fails=0,mode='chat',last='',filler=null,idle=Date.now(),chat=0,askName=false,lv=0,name=LS('hn',''),facts=LS('hf',[]),pass=LS('hp','');
+const setS=(s,l)=>{B.dataset.s=s;st.textContent=l};
 const say=(t,who='ハヤト')=>{cap.innerHTML='';const s=document.createElement('small');s.textContent=who;cap.append(s,t);cap.scrollTop=cap.scrollHeight};
+
+/* 効果音(WebAudioで合成) */
+function sfx(a){if(!ac)return;a.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*.08;o.frequency.value=f;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.16)})}
 
 /* 口パク・まばたき */
 const show=(id,on)=>{$(id).style.display=on?'':'none'};
 function mouth(n){show('#mp',n);[1,2,3].forEach(i=>show('#m'+i,i===n));show('#tg',n===3)}
 const talkStart=()=>{clearInterval(mt);mt=setInterval(()=>mouth(Math.random()<.18?0:1+Math.floor(Math.random()*3)),115)};
 const talkStop=()=>{clearInterval(mt);mouth(0)};
-(function blink(){setTimeout(()=>{if(document.body.dataset.s!=='speak'||Math.random()<.5){show('#blink',true);setTimeout(()=>show('#blink',false),130)}blink()},2500+Math.random()*3500)})();
+(function blink(){setTimeout(()=>{show('#blink',true);setTimeout(()=>show('#blink',false),130);blink()},2500+Math.random()*3500)})();
+function lip(){if(!cur)return mouth(0);const d=new Uint8Array(an.fftSize);an.getByteTimeDomainData(d);let s=0;for(const v of d)s+=(v-128)**2;const r=Math.sqrt(s/d.length)/128;lv=Math.max(lv,Math.min(1,r*5));mouth(r>.2?3:r>.1?2:r>.03?1:0);requestAnimationFrame(lip)}
 
-/* 読み上げ(iPhone内蔵の日本語音声) */
-function pickVoice(){const v=speechSynthesis.getVoices().filter(x=>x.lang.replace('_','-').startsWith('ja'));
-  return v.find(x=>/Otoya|Hattori|Ichiro/i.test(x.name))||v.find(x=>!/Kyoko|O-Ren|Sakura/i.test(x.name))||v[0]}
-function speak(text){
-  speechSynthesis.cancel();
-  const parts=text.match(/[^。！？!?\n]+[。！？!?]?/g)||[text];
-  speaking=true;setS('speak','話しています');talkStart();
-  const done=()=>{if(!speaking)return;speaking=false;talkStop();setS('idle','待機中');if(loop)setTimeout(listen,400)};
-  parts.forEach((p,i)=>{const u=new SpeechSynthesisUtterance(p.trim());u.lang='ja-JP';u.rate=1.02;u.pitch=.85;
-    const v=pickVoice();if(v)u.voice=v;
-    if(i===parts.length-1){u.onend=done}u.onerror=done;speechSynthesis.speak(u)});
+/* 音声: Gemini TTS(高音質) → だめならiPhone内蔵音声に自動で切替 */
+async function ttsBuf(t){
+  const r=await fetch('/api/tts',{method:'POST',headers:{'content-type':'application/json','x-pass':pass},body:JSON.stringify({text:t})});
+  if(!r.ok)throw 0;const bin=atob((await r.json()).audio),n=bin.length>>1,b=ac.createBuffer(1,n,24000),c=b.getChannelData(0);
+  for(let i=0;i<n;i++){let v=bin.charCodeAt(2*i)|bin.charCodeAt(2*i+1)<<8;if(v>32767)v-=65536;c[i]=v/32768}return b}
+const setSp=()=>{if(!speaking){speaking=true;setS('speak','話しています')}};
+function playBuf(b,my){return new Promise(res=>{if(!ac||my!==gen)return res();const s=ac.createBufferSource();s.buffer=b;s.connect(an);cur=s;setSp();s.onended=()=>{if(cur===s)cur=null;res()};s.start();lip()})}
+function pickVoice(){const v=speechSynthesis.getVoices().filter(x=>x.lang.replace('_','-').startsWith('ja'));return v.find(x=>/Otoya|Hattori|Ichiro/i.test(x.name))||v.find(x=>!/Kyoko|O-Ren|Sakura/i.test(x.name))||v[0]}
+function synth(t,my){return new Promise(res=>{if(my!==gen)return res();setSp();talkStart();const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=1.02;u.pitch=.85;const v=pickVoice();if(v)u.voice=v;u.onend=u.onerror=()=>{talkStop();res()};speechSynthesis.speak(u)})}
+function enq(t,my){
+  if(!t.trim())return;
+  const pr=hq&&ac?ttsBuf(t).catch(()=>{if(++fails>=2&&hq){hq=false;$('#hq').setAttribute('aria-pressed',false)}return null}):null;
+  chain=chain.then(async()=>{if(my!==gen)return;const b=pr&&await pr;if(my!==gen)return;b?await playBuf(b,my):await synth(t,my)});
 }
+function stopAll(){gen++;try{cur&&cur.stop()}catch{}cur=null;speechSynthesis.cancel();speaking=false;talkStop();chain=Promise.resolve()}
+function finish(my){chain=chain.then(()=>{if(my!==gen)return;speaking=false;talkStop();setS('idle','待機中');idle=Date.now();setTimeout(()=>{if(!speaking)B.dataset.e=''},1800);if(loop)setTimeout(listen,400)})}
 
-/* 聞き取り(iPhoneの音声認識を使用) */
+/* 聞き取り */
 function listen(){
-  if(busy||speaking||document.body.dataset.s==='listen')return;
+  if(busy||speaking||B.dataset.s==='listen')return;
   if(!SR){say('このブラウザは音声認識に未対応です。「文字入力」を開き、キーボードのマイクで話してください。');return}
-  rec=new SR();rec.lang='ja-JP';rec.interimResults=true;rec.continuous=false;
-  let t='';
-  rec.onresult=e=>{t=[...e.results].map(r=>r[0].transcript).join('');say(t,'あなた')};
-  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')say('マイクが許可されていません。iPhoneの「設定」→「Safari」→「マイク」で許可してください。');};
-  rec.onend=()=>{if(t.trim())ask(t.trim());else if(document.body.dataset.s==='listen')setS('idle','待機中')};
-  try{rec.start();setS('listen','聞いています')}catch(e){setS('idle','待機中')}
+  rec=new SR();rec.lang='ja-JP';rec.interimResults=true;rec.continuous=false;let t='';
+  rec.onresult=e=>{t=[...e.results].map(r=>r[0].transcript).join('');lv=.8;say(t,'あなた')};
+  rec.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error))say('マイクが許可されていません。iPhoneの「設定」→「Safari」→「マイク」で許可してください。')};
+  rec.onend=()=>{if(t.trim())ask(t.trim());else if(B.dataset.s==='listen')setS('idle','待機中')};
+  try{rec.start();setS('listen','聞いています');sfx([660,880])}catch{setS('idle','待機中')}
 }
 
-/* AIに質問 */
-async function ask(q){
-  busy=true;setS('think','考え中');say(q,'あなた');
+/* 合言葉(認証画面) */
+function getPass(){if(pass)return Promise.resolve(pass);return new Promise(r=>{const a=$('#auth');a.hidden=false;$('#pw').focus();$('#pwok').onclick=()=>{pass=$('#pw').value;$('#pw').value='';a.hidden=true;r(pass)}})}
+
+/* AIに質問(ストリーミング) */
+async function ask(q,img){
+  if(busy)return;
+  if(askName){askName=false;name=q.replace(/^(僕は|私は|俺は|オレは|わたしは)/,'').replace(/(です|だよ|だ|といいます|と申します|って呼んで.*)[。！]?$/,'').slice(0,12);SS('hn',name);q='僕の名前は'+name+'。'}
+  busy=true;stopAll();const my=gen;idle=Date.now();chat=0;setS('think','考え中');sfx([520,780]);say(q,'あなた');
   history.push({role:'user',text:q});history=history.slice(-12);
+  let full='',pos=0,first=false,emo='';
+  const ft=setTimeout(()=>{if(!first&&filler&&my===gen)playBuf(filler,my)},900);
+  const clean=()=>{const m=full.match(/^\s*\[(smug|think|surprise|happy|serious|sweat)\]/);if(m&&m[1]!==emo){emo=m[1];B.dataset.e=emo}
+    return full.replace(/^\s*\[\w*\]?/,'').replace(/\[\[[\s\S]*?\]\]/g,'').replace(/\[\[[\s\S]*$/,'').trim()};
   try{
-    let pass=localStorage.getItem('hp')||prompt('合言葉を入力してください')||'';
-    let r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json','x-pass':pass},body:JSON.stringify({messages:history})});
-    if(r.status===401){localStorage.removeItem('hp');history.pop();throw new Error('合言葉が違います。もう一度話しかけてください。')}
-    localStorage.setItem('hp',pass);
-    const d=await r.json();if(!r.ok)throw new Error(d.error||'エラーが発生しました');
-    history.push({role:'model',text:d.reply});busy=false;say(d.reply);speak(d.reply);
-  }catch(e){busy=false;setS('idle','待機中');say(e.message)}
+    const p=await getPass();
+    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json','x-pass':p},body:JSON.stringify({messages:history,mode,name,facts,img})});
+    if(r.status===401){pass='';SS('hp','');throw new Error('合言葉が違います。もう一度話しかけてください。')}
+    if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'エラーが発生しました');
+    pass=p;SS('hp',p);
+    const rd=r.body.getReader(),dc=new TextDecoder();let buf='';
+    for(;;){const {done,value}=await rd.read();if(done)break;buf+=dc.decode(value,{stream:true});const ls=buf.split('\n');buf=ls.pop();
+      for(const l of ls){if(!l.startsWith('data:'))continue;try{full+=(JSON.parse(l.slice(5)).candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('')}catch{}}
+      const t=clean();if(t)say(t);
+      if(!first){const m=t.match(/^[\s\S]*?[。！？!?]/);if(m){first=true;clearTimeout(ft);pos=m[0].length;enq(m[0],my)}}}
+    clearTimeout(ft);const t=clean()||'うまく聞き取れなかったよ。もう一度頼む。';say(t);
+    if(!first)enq(t,my);else enq(t.slice(pos),my);
+    for(const m of full.matchAll(/\[\[mem:(.+?)\]\]/g))if(!facts.includes(m[1])){facts.push(m[1]);facts=facts.slice(-8);SS('hf',facts)}
+    history.push({role:'model',text:t});last=t;busy=false;finish(my);
+  }catch(e){clearTimeout(ft);if(history.at(-1)?.role==='user')history.pop();busy=false;setS('idle','待機中');say(e.message)}
 }
+
+/* 背景: 夜景の視差・データ粒子・ホログラム床・音に反応する波形 */
+const cv=$('#bg'),cx=cv.getContext('2d'),ch=$('#char');let W,H,D,bl=[],pt=[],px=0,py=0,tx=0,ty=0;
+function rs(){W=innerWidth;H=innerHeight;D=Math.min(devicePixelRatio||1,2);cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);bl=[];
+  for(let l=0;l<2;l++){let x=-30;while(x<W+60){const w=20+Math.random()*34;bl.push({l,x,w,h:(l?50:90)+Math.random()*(l?110:190),s:Math.random()*99|0});x+=w+2}}
+  pt=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,v:.15+Math.random()*.5,r:.4+Math.random()*1.5}))}
+rs();addEventListener('resize',rs);
+addEventListener('deviceorientation',e=>{tx=Math.max(-1,Math.min(1,(e.gamma||0)/25));ty=Math.max(-1,Math.min(1,((e.beta||45)-45)/25))});
+addEventListener('pointermove',e=>{tx=(e.clientX/W-.5)*2;ty=(e.clientY/H-.5)*2});
+function draw(ts){
+  const t=ts/1000,s=B.dataset.s;px+=(tx-px)*.06;py+=(ty-py)*.06;lv*=.93;if(s==='think')lv=Math.max(lv,.25+Math.sin(t*8)*.1);
+  cx.clearRect(0,0,W,H);const base=H*.66;
+  for(const b of bl){const o=px*(b.l?10:24),y=base-b.h+(b.l?0:26);cx.fillStyle=b.l?'rgba(8,36,96,.45)':'rgba(5,22,66,.7)';cx.fillRect(b.x+o,y,b.w,H);cx.strokeStyle='rgba(0,229,255,.18)';cx.strokeRect(b.x+o,y,b.w,H);
+    cx.fillStyle='rgba(0,229,255,.5)';for(let j=0;j*12+y+8<base+20;j++)for(let i=0;i<b.w/10-.5;i++)if((i*7+j*13+b.s)%5<1&&((t*.3+b.s+i+j)%7>.4))cx.fillRect(b.x+o+4+i*10,y+8+j*12,3,4)}
+  const cr=ch.getBoundingClientRect(),mx=cr.left+cr.width/2,my=cr.top+cr.height*.45;
+  cx.fillStyle='rgba(0,229,255,.7)';for(const p of pt){if(s==='think'){p.x+=(mx-p.x)*.012;p.y+=(my-p.y)*.012}else p.y-=p.v;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.globalAlpha=.25+p.r/3;cx.beginPath();cx.arc(p.x+px*14,p.y,p.r,0,7);cx.fill()}cx.globalAlpha=1;
+  const fy=cr.bottom-8,fw=cr.width*.62,e=(t%2)/2;cx.lineWidth=2;cx.strokeStyle='rgba(0,229,255,.55)';cx.fillStyle='rgba(0,150,255,.14)';
+  cx.beginPath();cx.ellipse(mx,fy,fw,fw*.17,0,0,7);cx.fill();cx.stroke();cx.strokeStyle=`rgba(0,229,255,${.5*(1-e)})`;cx.beginPath();cx.ellipse(mx,fy,fw*(.4+e*.9),fw*(.4+e*.9)*.17,0,0,7);cx.stroke();
+  const R=Math.min(W*.4,210);cx.lineWidth=1.5+lv*2;cx.strokeStyle=`rgba(0,229,255,${.35+lv*.6})`;cx.beginPath();
+  for(let i=0;i<=90;i++){const a=i/90*6.2832,r=R+(Math.sin(a*6+t*3)*3+Math.sin(a*11-t*5)*2)*(.3+lv*2.4);cx[i?'lineTo':'moveTo'](mx+Math.cos(a)*r,my+Math.sin(a)*r)}cx.stroke();
+  ch.style.translate=`${px*8}px ${py*5}px`;requestAnimationFrame(draw)}
+requestAnimationFrame(draw);
+
+/* 名言カード(画像にして共有) */
+function card(){
+  if(!last){say('まず何か話しかけてくれ。');return}
+  const c=document.createElement('canvas');c.width=1080;c.height=1350;const g=c.getContext('2d');
+  const gr=g.createRadialGradient(540,700,50,540,700,1000);gr.addColorStop(0,'#0b3a8f');gr.addColorStop(1,'#030a1c');g.fillStyle=gr;g.fillRect(0,0,1080,1350);
+  g.strokeStyle='rgba(0,229,255,.12)';for(let i=0;i<=1080;i+=54){g.beginPath();g.moveTo(i,0);g.lineTo(i,1350);g.moveTo(0,i);g.lineTo(1080,i);g.stroke()}
+  g.fillStyle='#00e5ff';g.font='bold 40px sans-serif';g.fillText('AI HAYATO',70,100);g.fillStyle='#e8f4ff';g.font='bold 52px sans-serif';
+  let y=220,ln='';for(const ch of last){if(g.measureText(ln+ch).width>940){g.fillText(ln,70,y);y+=80;ln=''}ln+=ch}g.fillText(ln,70,y);
+  g.drawImage($('#char img'),345,y+60,390,615);
+  c.toBlob(b=>{const f=new File([b],'hayato.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(()=>{});else{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hayato.png';a.click()}})}
 
 /* 操作 */
-$('#go').onclick=()=>{
-  $('#start').remove();
-  const u=new SpeechSynthesisUtterance('');speechSynthesis.speak(u);   // iPhoneで音声を有効化
-  try{navigator.wakeLock&&navigator.wakeLock.request('screen')}catch(e){}
-  const g='AIハヤトです。何でも聞いてください。';say(g);speak(g);
+$('#go').onclick=async()=>{
+  ac=new (window.AudioContext||window.webkitAudioContext)();ac.resume();an=ac.createAnalyser();an.fftSize=256;an.connect(ac.destination);
+  speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+  try{DeviceOrientationEvent.requestPermission&&DeviceOrientationEvent.requestPermission()}catch{}
+  try{navigator.wakeLock&&navigator.wakeLock.request('screen')}catch{}
+  const s=$('#start');s.innerHTML='<div id="bl"></div>';const L=['> AUTHENTICATING ...','> 別班 / AI-HAYATO','> LINK ESTABLISHED','> ONLINE'];
+  for(const l of L){$('#bl').textContent+=l+'\n';sfx([900+Math.random()*400]);await new Promise(r=>setTimeout(r,380))}
+  s.style.opacity=0;setTimeout(()=>s.remove(),600);
+  const h=new Date().getHours(),hi=h<11?'おはよう':h<18?'よう':'こんばんは';
+  const g=name?`${hi}、${name}。AIハヤトだ。何でも聞け。`:'AIハヤトだ。オレに何でも聞け。まず、お前の名前を教えてくれ。';if(!name)askName=true;
+  say(g);const my=++gen;B.dataset.e='smug';enq(g,my);finish(my);
+  if(hq){ttsBuf('ふむ。').then(b=>filler=b).catch(()=>{})}
+  setInterval(()=>{const L=['おい、退屈してるのか。','作戦なら、いつでも聞くぞ。','静かだな。考え事か?'];
+    if(Date.now()-idle>75000&&B.dataset.s==='idle'&&!busy&&chat<2){chat++;idle=Date.now();const t=L[Math.random()*3|0],m=++gen;say(t);B.dataset.e='sweat';enq(t,m);finish(m)}},10000);
 };
-$('#mic').onclick=()=>{
-  if(speaking){speechSynthesis.cancel();speaking=false;talkStop();setS('idle','待機中');return}
-  if(document.body.dataset.s==='listen'){rec&&rec.stop();return}
-  listen();
-};
+$('#mic').onclick=()=>{idle=Date.now();if(speaking||cur){stopAll();setS('idle','待機中');return}if(B.dataset.s==='listen'){rec&&rec.stop();return}listen()};
 $('#loop').onclick=e=>{loop=!loop;e.currentTarget.setAttribute('aria-pressed',loop)};
 $('#kb').onclick=e=>{const on=$('#txt').classList.toggle('on');e.currentTarget.setAttribute('aria-pressed',on);if(on)$('#in').focus()};
-const sendTxt=()=>{const v=$('#in').value.trim();if(v&&!busy){$('#in').value='';speechSynthesis.cancel();ask(v)}};
+const sendTxt=()=>{const v=$('#in').value.trim();if(v&&!busy){$('#in').value='';ask(v)}};
 $('#send').onclick=sendTxt;$('#in').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing)sendTxt()};
+$('#hq').onclick=e=>{hq=!hq;fails=0;e.currentTarget.setAttribute('aria-pressed',hq)};
+$('#cd').onclick=card;$('#cam').onclick=()=>$('#fi').click();
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x===b));history=[];
+  if(!busy&&mode==='news')ask('今日の気になるニュースを1つ報告して。');if(!busy&&mode==='cipher')ask('暗号ゲームを始めて。最初の問題を出して。')});
+$('#fi').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const k=Math.min(1,768/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  const q=$('#in').value.trim()||'この写真について、見たままを教えて。';$('#in').value='';ask(q,c.toDataURL('image/jpeg',.8).split(',')[1])};im.src=URL.createObjectURL(f);e.target.value=''};
 speechSynthesis.getVoices();
 </script>
 </body>
