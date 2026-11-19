@@ -20,9 +20,22 @@ ${modeTxt}`;
     const body={contents,systemInstruction:{parts:[{text}]},generationConfig:{maxOutputTokens:400,temperature:.8,thinkingConfig:{thinkingBudget:0}}};
     const last=messages.at(-1).text||'';
     if(env.USE_SEARCH==='1'&&(mode==='news'||/最新|今日|ニュース|天気|現在|いま|速報|結果|株価|何位/.test(last)))body.tools=[{googleSearch:{}}];
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse',{
-      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':env.GEMINI_API_KEY},body:JSON.stringify(body)});
-    if(!res.ok)return J({error:'AIの応答エラー('+res.status+')。少し待ってもう一度。'},502);
+    // モデルが廃止(404)ならスキップ、思考設定が非対応(400)なら設定を変えて再試行
+    const models=[env.GEMINI_MODEL,'gemini-3.5-flash','gemini-flash-latest','gemini-2.5-flash'].filter(Boolean);
+    const think=[{thinkingLevel:'minimal'},{thinkingBudget:0},null];
+    let res,code=0;
+    outer:for(const m of models){
+      for(const tc of think){
+        const gc={...body.generationConfig};if(tc)gc.thinkingConfig=tc;else delete gc.thinkingConfig;
+        res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:streamGenerateContent?alt=sse`,{
+          method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':env.GEMINI_API_KEY},body:JSON.stringify({...body,generationConfig:gc})});
+        code=res.status;
+        if(res.ok)break outer;
+        if(code===404)break;
+        if(code!==400)break outer;
+      }
+    }
+    if(!res.ok)return J({error:'AIの応答エラー('+code+')。少し待ってもう一度。'},502);
     return new Response(res.body,{headers:{'Content-Type':'text/event-stream','Cache-Control':'no-store'}});
   }catch(e){return J({error:e.message},500)}
 }
